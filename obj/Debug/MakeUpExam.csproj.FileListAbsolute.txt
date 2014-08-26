@@ -1,0 +1,11 @@
+D:\Github\MakeUpExam\bin\Debug\MakeUpExam.pdb
+D:\Github\MakeUpExam\bin\Debug\JHSchool.Data.dll
+D:\Github\MakeUpExam\bin\Debug\JHSchool.Data.pdb
+D:\Github\MakeUpExam\bin\Debug\JHSchool.Data.xml
+D:\Github\MakeUpExam\obj\Debug\MakeUpExam.csprojResolveAssemblyReference.cache
+D:\Github\MakeUpExam\obj\Debug\MakeUpExam.MakeUpExamForm.resources
+D:\Github\MakeUpExam\obj\Debug\MakeUpExam.Properties.Resources.resources
+D:\Github\MakeUpExam\obj\Debug\MakeUpExam.csproj.GenerateResource.Cache
+D:\Github\MakeUpExam\obj\Debug\MakeUpExam.pdb
+D:\Github\MakeUpExam\bin\Debug\MakeUpExam.dll
+D:\Github\MakeUpExam\obj\Debug\MakeUpExam.dll
