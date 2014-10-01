@@ -68,7 +68,7 @@ namespace MakeUpExam
 				return;
 			}
 
-			classList.Sort(classsort); //sort class
+			//classList.Sort(classsort); //sort class
 			Stopwatch sw = Stopwatch.StartNew();
 			double total = 0;
 
@@ -85,8 +85,34 @@ namespace MakeUpExam
 				{
 					classIdToRecord.Add(cr.ID, cr);
 				}
+				//cr.DisplayOrder();
 			}
 
+			List<StudentObj> ObjList = new List<StudentObj>();
+			foreach (StudentRecord s in studentAll)
+			{
+				StudentObj obj = new StudentObj(s);
+				obj.ClassRecord = classIdToRecord.ContainsKey(s.RefClassID) ? classIdToRecord[s.RefClassID] : new ClassRecord();
+				ObjList.Add(obj);
+			}
+
+			ObjList.Sort(delegate(StudentObj x, StudentObj y)
+			{
+				string x1 = x.ClassRecord.DisplayOrder.PadLeft(3, '0');
+				string xx = (x.ClassRecord.GradeYear + "").PadLeft(3, '0');
+				xx += x1 == "000" ? "999" : x1; 
+				xx += x.ClassRecord.Name.PadLeft(20, '0');
+				xx += (x.StudentRecord.SeatNo + "").PadLeft(3, '0');
+
+				string y1 = y.ClassRecord.DisplayOrder.PadLeft(3, '0');
+				string yy = (y.ClassRecord.GradeYear + "").PadLeft(3, '0');
+				yy += y1 == "000" ? "999" : y1; 
+				yy += y.ClassRecord.Name.PadLeft(20, '0');
+				yy += (y.StudentRecord.SeatNo + "").PadLeft(3, '0');
+
+				return xx.CompareTo(yy);
+			});
+			
 			List<string> domains = new List<string>()
 			{
 				"國語文", "英語", "數學", "社會", "自然與生活科技", "健康與體育", "藝術與人文", "綜合活動"
@@ -111,7 +137,7 @@ namespace MakeUpExam
 
 			//各科目的整理
 			Dictionary<string, int> subDic = new Dictionary<string,int>();
-			int index = 6;
+			int index = 7;
 			foreach(string key in domains)
 			{
 				if(!subDic.ContainsKey(key))
@@ -128,11 +154,12 @@ namespace MakeUpExam
 			wb.Worksheets[sheetIndex].Cells[0, 0].PutValue("年級");
 			wb.Worksheets[sheetIndex].Cells[0, 1].PutValue("班級");
 			wb.Worksheets[sheetIndex].Cells[0, 2].PutValue("座號");
-			wb.Worksheets[sheetIndex].Cells[0, 3].PutValue("姓名");
-			wb.Worksheets[sheetIndex].Cells[0, 4].PutValue("學年度");
-			wb.Worksheets[sheetIndex].Cells[0, 5].PutValue("學期");
+			wb.Worksheets[sheetIndex].Cells[0, 3].PutValue("學號");
+			wb.Worksheets[sheetIndex].Cells[0, 4].PutValue("姓名");
+			wb.Worksheets[sheetIndex].Cells[0, 5].PutValue("學年度");
+			wb.Worksheets[sheetIndex].Cells[0, 6].PutValue("學期");
 
-			int subIndex = 6;
+			int subIndex = 7;
 			foreach (string d in domains)
 			{
 				wb.Worksheets[sheetIndex].Cells[0, subIndex].PutValue(d);
@@ -140,26 +167,31 @@ namespace MakeUpExam
 			}
 
 			int rowIndex = 1;
-			foreach (StudentRecord sr in studentAll)
+			foreach (StudentObj so in ObjList)
 			{
+				if (so.StudentRecord.Status != StudentRecord.StudentStatus.一般) {
+					continue;
+				}
+
 				//此學生需要補考
-				if (MakeUpDic.ContainsKey(sr.ID))
+				if (MakeUpDic.ContainsKey(so.StudentRecord.ID))
 				{
-					if (classIdToRecord.ContainsKey(sr.RefClassID))
+					if (classIdToRecord.ContainsKey(so.StudentRecord.RefClassID))
 					{
-						wb.Worksheets[sheetIndex].Cells[rowIndex, 0].PutValue(classIdToRecord[sr.RefClassID].GradeYear);
-						wb.Worksheets[sheetIndex].Cells[rowIndex, 1].PutValue(classIdToRecord[sr.RefClassID].Name);
+						wb.Worksheets[sheetIndex].Cells[rowIndex, 0].PutValue(classIdToRecord[so.StudentRecord.RefClassID].GradeYear);
+						wb.Worksheets[sheetIndex].Cells[rowIndex, 1].PutValue(classIdToRecord[so.StudentRecord.RefClassID].Name);
 					}
-					wb.Worksheets[sheetIndex].Cells[rowIndex, 2].PutValue(sr.SeatNo);
-					wb.Worksheets[sheetIndex].Cells[rowIndex, 3].PutValue(sr.Name);
-					wb.Worksheets[sheetIndex].Cells[rowIndex, 4].PutValue(cbbSchoolYear.Text);
-					wb.Worksheets[sheetIndex].Cells[rowIndex, 5].PutValue(cbbSemester.Text);	
+					wb.Worksheets[sheetIndex].Cells[rowIndex, 2].PutValue(so.StudentRecord.SeatNo);
+					wb.Worksheets[sheetIndex].Cells[rowIndex, 3].PutValue(so.StudentRecord.StudentNumber);
+					wb.Worksheets[sheetIndex].Cells[rowIndex, 4].PutValue(so.StudentRecord.Name);
+					wb.Worksheets[sheetIndex].Cells[rowIndex, 5].PutValue(cbbSchoolYear.Text);
+					wb.Worksheets[sheetIndex].Cells[rowIndex, 6].PutValue(cbbSemester.Text);	
 					foreach (string d in domains)
 					{
 						int columnIndex = subDic[d];
-						if (MakeUpDic[sr.ID].ContainsKey(d))
+						if (MakeUpDic[so.StudentRecord.ID].ContainsKey(d))
 						{
-							wb.Worksheets[sheetIndex].Cells[rowIndex, columnIndex].PutValue(MakeUpDic[sr.ID][d].Score);
+							wb.Worksheets[sheetIndex].Cells[rowIndex, columnIndex].PutValue(MakeUpDic[so.StudentRecord.ID][d].Score);
 						}
 					}
 					rowIndex++;
@@ -184,23 +216,23 @@ namespace MakeUpExam
 				{
 					MessageBox.Show("檔案儲存失敗");
 				}
+				this.Close();
 			}
-		}
-
-		private int classsort(ClassRecord x, ClassRecord y)
-		{
-			string xx = (x.GradeYear + "").PadLeft(3, '0');
-			xx += x.Name.PadLeft(20, '0');
-
-			string yy = (y.GradeYear + "").PadLeft(3, '0');
-			yy += y.Name.PadLeft(20, '0');
-
-			return xx.CompareTo(yy);
 		}
 
 		private void btnQuit_Click(object sender, EventArgs e)
 		{
 			this.Close();
+		}
+	}
+
+	public class StudentObj
+	{
+		public StudentRecord StudentRecord;
+		public ClassRecord ClassRecord;
+		public StudentObj(StudentRecord s)
+		{
+			this.StudentRecord = s;
 		}
 	}
 }
