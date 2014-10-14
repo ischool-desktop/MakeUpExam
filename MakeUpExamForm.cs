@@ -123,6 +123,8 @@ namespace MakeUpExam
 			{
 				foreach (KeyValuePair<string,DomainScore> item in JHssr.Domains)
 				{
+					//item.Value.Domain == item.Key;
+					//item.Value.Score
 					if (item.Value.Score.HasValue && item.Value.Score.Value < 60)
 					{
 						if (!MakeUpDic.ContainsKey(JHssr.RefStudentID))
