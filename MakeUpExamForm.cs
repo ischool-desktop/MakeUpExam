@@ -38,11 +38,29 @@ namespace MakeUpExam
 			cbbSchoolYear.Text = schoolYear + "";
 			cbbSemester.Text = semester + "";
 		}
-		class DataRecord
+
+		List<string> domainaaa = new List<string>()
+			{
+				"國語文", "英語", "數學", "社會", "自然與生活科技", "健康與體育", "藝術與人文", "綜合活動"
+			};
+
+		private int domainSort(string x, string y)
 		{
-			public StudentRecord studentRecordData;
-			public DomainScore DomainScoreData;
+			if (domainaaa.Contains(x) && domainaaa.Contains(y))
+			{
+				return domainaaa.IndexOf(x).CompareTo(domainaaa.IndexOf(y));
+			}
+			else if (!domainaaa.Contains(x) && domainaaa.Contains(y))
+			{
+				return 1;
+			}
+			else if (domainaaa.Contains(x) && !domainaaa.Contains(y))
+			{
+				return -1;
+			}
+			return x.CompareTo(y);
 		}
+
 		private void btnPrint_Click(object sender, EventArgs e)
 		{
 			int schoolYear;
@@ -112,11 +130,8 @@ namespace MakeUpExam
 
 				return xx.CompareTo(yy);
 			});
-			
-			List<string> domains = new List<string>()
-			{
-				"國語文", "英語", "數學", "社會", "自然與生活科技", "健康與體育", "藝術與人文", "綜合活動"
-			};
+
+			List<string> domains = new List<string>();
 			
 			Dictionary<string, Dictionary<string,DomainScore>> MakeUpDic = new Dictionary<string,Dictionary<string,DomainScore>>();
 			foreach (JHSemesterScoreRecord JHssr in semesterScoreList) 
@@ -130,12 +145,12 @@ namespace MakeUpExam
 						if (!MakeUpDic.ContainsKey(JHssr.RefStudentID))
 							MakeUpDic.Add(JHssr.RefStudentID,new Dictionary<string,DomainScore>());
 						MakeUpDic[JHssr.RefStudentID].Add(item.Key,item.Value);
-						//domains.Add(item.Key);
+						domains.Add(item.Key);
 					}
 				}
 			}
-			//domains = domains.Distinct().ToList();
-			//domains.Sort(subSort);
+			domains = domains.Distinct().ToList();
+			domains.Sort(domainSort);
 
 			//各科目的整理
 			Dictionary<string, int> subDic = new Dictionary<string,int>();
