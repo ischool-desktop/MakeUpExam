@@ -39,22 +39,22 @@ namespace MakeUpExam
 			cbbSemester.Text = semester + "";
 		}
 
-		List<string> domainaaa = new List<string>()
+		List<string> domainNameSort = new List<string>()
 			{
 				"國語文", "英語", "數學", "社會", "自然與生活科技", "健康與體育", "藝術與人文", "綜合活動"
 			};
 
 		private int domainSort(string x, string y)
 		{
-			if (domainaaa.Contains(x) && domainaaa.Contains(y))
+			if (domainNameSort.Contains(x) && domainNameSort.Contains(y))
 			{
-				return domainaaa.IndexOf(x).CompareTo(domainaaa.IndexOf(y));
+				return domainNameSort.IndexOf(x).CompareTo(domainNameSort.IndexOf(y));
 			}
-			else if (!domainaaa.Contains(x) && domainaaa.Contains(y))
+			else if (!domainNameSort.Contains(x) && domainNameSort.Contains(y))
 			{
 				return 1;
 			}
-			else if (domainaaa.Contains(x) && !domainaaa.Contains(y))
+			else if (domainNameSort.Contains(x) && !domainNameSort.Contains(y))
 			{
 				return -1;
 			}
@@ -85,12 +85,8 @@ namespace MakeUpExam
 				MsgBox.Show("無選取班級，請確認是否選取班級");
 				return;
 			}
-
-			//classList.Sort(classsort); //sort class
 			Stopwatch sw = Stopwatch.StartNew();
 			double total = 0;
-
-			sw.Restart(); //設定計時
 
 			List<StudentRecord> studentAll = K12.Data.Student.SelectByClassIDs(classIds);
 			List<JHSemesterScoreRecord> semesterScoreList = JHSemesterScore.SelectBySchoolYearAndSemester(studentAll.Select(x => x.ID).ToList(), schoolYear, semester);
@@ -103,7 +99,6 @@ namespace MakeUpExam
 				{
 					classIdToRecord.Add(cr.ID, cr);
 				}
-				//cr.DisplayOrder();
 			}
 
 			List<StudentObj> ObjList = new List<StudentObj>();
