@@ -14,3 +14,11 @@ F:\WindowsData\Git\MakeUpExam\obj\Debug\MakeUpExam.Properties.Resources.resource
 F:\WindowsData\Git\MakeUpExam\obj\Debug\MakeUpExam.csproj.GenerateResource.Cache
 F:\WindowsData\Git\MakeUpExam\obj\Debug\MakeUpExam.dll
 F:\WindowsData\Git\MakeUpExam\obj\Debug\MakeUpExam.pdb
+D:\GitHub2\MakeUpExam\obj\Debug\MakeUpExam.MakeUpExamForm.resources
+D:\GitHub2\MakeUpExam\obj\Debug\MakeUpExam.Properties.Resources.resources
+D:\GitHub2\MakeUpExam\obj\Debug\MakeUpExam.csproj.GenerateResource.Cache
+D:\GitHub2\MakeUpExam\obj\Debug\MakeUpExam.dll
+D:\GitHub2\MakeUpExam\bin\Debug\MakeUpExam.dll
+D:\GitHub2\MakeUpExam\bin\Debug\MakeUpExam.pdb
+D:\GitHub2\MakeUpExam\obj\Debug\MakeUpExam.pdb
+D:\GitHub2\MakeUpExam\obj\Debug\MakeUpExam.csprojResolveAssemblyReference.cache
