@@ -202,10 +202,12 @@ namespace MakeUpExam
             wb.Open(new MemoryStream(Properties.Resources.Template));
             Worksheet templateSheet = wb.Worksheets["Template"];
             int sheet1 = wb.Worksheets.AddCopy("Template");
+            int sheet1_additional = wb.Worksheets.AddCopy("Template");
             int sheet2 = wb.Worksheets.AddCopy("Template");
             int sheet3 = wb.Worksheets.AddCopy("Template");
 
-            wb.Worksheets[sheet1].Name = "領域補考清單";
+            wb.Worksheets[sheet1].Name = "領域補考清單(橫)";
+            wb.Worksheets[sheet1_additional].Name = "領域補考清單(直)";
             wb.Worksheets[sheet2].Name = "科目補考清單(橫)";
             wb.Worksheets[sheet3].Name = "科目補考清單(直)";
 
@@ -218,6 +220,7 @@ namespace MakeUpExam
             //wb.Worksheets[sheet1].Cells[0, 6].PutValue("學期");
 
             wb.Worksheets[sheet1].SetColumnHeaders(new string[] { "年級", "班級", "座號", "學號", "姓名", "學年度", "學期"});
+            wb.Worksheets[sheet1_additional].SetColumnHeaders(new string[] { "年級", "班級", "座號", "學號", "姓名", "學年度", "學期","領域","分數" });
 
             //wb.Worksheets[sheet2].Cells[0, 0].PutValue("年級");
             //wb.Worksheets[sheet2].Cells[0, 1].PutValue("班級");
@@ -260,6 +263,7 @@ namespace MakeUpExam
             int sheet1Row = 1;
             int sheet2Row = 1;
             int sheet3Row = 1;
+            int sheet1_additionalRow = 1;
 
             foreach (StudentObj so in stuObjs)
             {
@@ -267,7 +271,7 @@ namespace MakeUpExam
                 if (so.StudentRecord.Status != StudentRecord.StudentStatus.一般)
                     continue;
 
-                //sheet1
+                //sheet1跟sheet1_additional一起處理
                 if (MakeUpDomainDic.ContainsKey(so.StudentRecord.ID))
                 {
                     wb.Worksheets[sheet1].Cells[sheet1Row, 0].PutValue(so.ClassRecord.GradeYear);
@@ -287,6 +291,23 @@ namespace MakeUpExam
                         }
                     }
                     sheet1Row++;
+
+                    //sheet1_additional
+                    foreach (string domain in MakeUpDomainDic[so.StudentRecord.ID].Keys)
+                    {
+                        wb.Worksheets[sheet1_additional].Cells[sheet1_additionalRow, 0].PutValue(so.ClassRecord.GradeYear);
+                        wb.Worksheets[sheet1_additional].Cells[sheet1_additionalRow, 1].PutValue(so.ClassRecord.Name);
+                        wb.Worksheets[sheet1_additional].Cells[sheet1_additionalRow, 2].PutValue(so.StudentRecord.SeatNo);
+                        wb.Worksheets[sheet1_additional].Cells[sheet1_additionalRow, 3].PutValue(so.StudentRecord.StudentNumber);
+                        wb.Worksheets[sheet1_additional].Cells[sheet1_additionalRow, 4].PutValue(so.StudentRecord.Name);
+                        wb.Worksheets[sheet1_additional].Cells[sheet1_additionalRow, 5].PutValue(_schoolYear);
+                        wb.Worksheets[sheet1_additional].Cells[sheet1_additionalRow, 6].PutValue(_semester);
+
+                        wb.Worksheets[sheet1_additional].Cells[sheet1_additionalRow, 7].PutValue(domain);
+                        wb.Worksheets[sheet1_additional].Cells[sheet1_additionalRow, 8].PutValue(MakeUpDomainDic[so.StudentRecord.ID][domain].Score);
+
+                        sheet1_additionalRow++;
+                    }
                 }
 
                 //sheet2跟sheet3一起處理
@@ -335,6 +356,7 @@ namespace MakeUpExam
             wb.Worksheets[sheet1].AutoFitColumns();
             wb.Worksheets[sheet2].AutoFitColumns();
             wb.Worksheets[sheet3].AutoFitColumns();
+            wb.Worksheets[sheet1_additional].AutoFitColumns();
 
             wb.Worksheets.RemoveAt(0);
 
